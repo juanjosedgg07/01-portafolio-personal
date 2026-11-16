@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "defaultMode": "default",
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/cuenta-servicio*.json)",
+      "Read(**/*firebase-adminsdk*.json)",
+      "Read(./.vercel/**)",
+      "Edit(./.env*)",
+      "Edit(./.claude/settings.json)",
+      "Edit(./.claude/hooks/**)",
+      "Edit(./ia/politica.mjs)",
+      "Bash(cat .env*)",
+      "Bash(type .env*)",
+      "Bash(printenv*)",
+      "Bash(gh auth token*)",
+      "WebFetch"
+    ],
+    "ask": [
+      "Bash(git push*)",
+      "Bash(gh *)",
+      "Bash(vercel *)",
+      "Bash(firebase *)",
+      "Bash(npm publish*)",
+      "Bash(curl *)",
+      "Bash(rm -rf*)",
+      "PowerShell(*)"
+    ],
+    "allow": [
+      "Bash(npm run lint*)",
+      "Bash(npm run typecheck*)",
+      "Bash(npm test*)",
+      "Bash(npm run build*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Write|Edit|NotebookEdit|Glob|Grep|Bash|PowerShell",
+        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/proteger.mjs\"" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/calidad.mjs\"" }]
+      }
+    ]
+  }
+}

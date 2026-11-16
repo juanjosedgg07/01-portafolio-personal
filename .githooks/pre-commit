@@ -1,0 +1,5 @@
+#!/bin/sh
+# Calidad automática antes de cada commit (código humano y de la IA).
+set -e
+echo "pre-commit: lint, tipos y pruebas…"
+npm run --silent verificar

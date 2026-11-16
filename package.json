@@ -1,0 +1,51 @@
+{
+  "name": "01-portafolio-personal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ia": "vitest run ia/pruebas",
+    "test:e2e": "playwright test",
+    "verificar": "npm run lint && npm run typecheck && npm test",
+    "prepare": "git config core.hooksPath .githooks || true",
+    "sembrar": "node --env-file=.env.local scripts/sembrar.mjs",
+    "crear-admin": "node --env-file=.env.local scripts/crear-admin.mjs"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.9.0",
+    "firebase": "^13.4.0",
+    "firebase-admin": "^14.5.1",
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.12",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.3.0",
+    "axe-core": "^4.14.1",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "jsdom": "^31.0.1",
+    "typescript": "^5",
+    "vitest": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=20.9"
+  }
+}
