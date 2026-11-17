@@ -1,0 +1,57 @@
+.migas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--texto-suave);
+  margin-bottom: 1.5rem;
+}
+
+.migas li:not(:last-child)::after {
+  content: "/";
+  margin-left: 0.5rem;
+  color: var(--texto-suave);
+}
+
+.migas a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+}
+
+.cabecera {
+  margin-bottom: 1.5rem;
+}
+
+.descripcion {
+  font-size: 1.125rem;
+}
+
+.galeria {
+  margin-block: 2.5rem;
+}
+
+.imagenes {
+  display: grid;
+  gap: var(--espacio);
+}
+
+@media (min-width: 64rem) {
+  .imagenes {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.figura {
+  margin: 0;
+  border-radius: var(--radio);
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+}
+
+.figura figcaption {
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
