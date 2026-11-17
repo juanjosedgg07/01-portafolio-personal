@@ -47,5 +47,10 @@
   },
   "engines": {
     "node": ">=20.9"
+  },
+  "overrides": {
+    "jwks-rsa": {
+      "jose": "^5.10.0"
+    }
   }
 }
