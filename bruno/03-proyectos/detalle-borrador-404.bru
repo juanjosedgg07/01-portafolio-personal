@@ -1,0 +1,15 @@
+meta {
+  name: Ver borrador sin sesión (404)
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{base}}/api/proyectos/proyecto-bruno
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

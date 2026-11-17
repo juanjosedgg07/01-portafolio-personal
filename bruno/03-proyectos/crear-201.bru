@@ -1,0 +1,23 @@
+meta {
+  name: Crear proyecto (201)
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{base}}/api/proyectos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+body:json {
+  { "slug": "proyecto-bruno", "titulo": "Proyecto de prueba", "descripcion": "Creado desde la colección de Bruno.", "tecnologias": ["Bruno"], "publicado": false }
+}
+
+assert {
+  res.status: eq 201
+}

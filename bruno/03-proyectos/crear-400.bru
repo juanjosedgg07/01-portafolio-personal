@@ -1,0 +1,23 @@
+meta {
+  name: Crear con slug inválido (400)
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{base}}/api/proyectos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+body:json {
+  { "slug": "Mi Proyecto", "titulo": "X", "descripcion": "corta" }
+}
+
+assert {
+  res.status: eq 400
+}

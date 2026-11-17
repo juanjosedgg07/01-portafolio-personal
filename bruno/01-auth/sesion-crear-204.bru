@@ -1,0 +1,19 @@
+meta {
+  name: Crear sesión (204)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base}}/api/auth/sesion
+  body: json
+  auth: none
+}
+
+body:json {
+  { "idToken": "{{idTokenAdmin}}" }
+}
+
+assert {
+  res.status: eq 204
+}

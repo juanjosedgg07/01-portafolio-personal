@@ -1,0 +1,19 @@
+meta {
+  name: Crear sesión con token falso (401)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base}}/api/auth/sesion
+  body: json
+  auth: none
+}
+
+body:json {
+  { "idToken": "token-falso-token-falso-token-falso" }
+}
+
+assert {
+  res.status: eq 401
+}

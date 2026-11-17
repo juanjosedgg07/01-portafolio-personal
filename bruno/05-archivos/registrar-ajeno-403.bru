@@ -1,0 +1,23 @@
+meta {
+  name: Registrar archivo ajeno (403)
+  type: http
+  seq: 28
+}
+
+post {
+  url: {{base}}/api/archivos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+body:json {
+  { "url": "https://x.public.blob.vercel-storage.com/usuarios/otro/a.webp", "pathname": "usuarios/otro/a.webp", "destino": { "tipo": "perfil" } }
+}
+
+assert {
+  res.status: eq 403
+}

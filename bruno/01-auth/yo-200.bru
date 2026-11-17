@@ -1,0 +1,19 @@
+meta {
+  name: Quién soy (200)
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base}}/api/auth/yo
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+assert {
+  res.status: eq 200
+}

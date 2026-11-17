@@ -1,0 +1,23 @@
+meta {
+  name: Editar perfil sin rol admin (403)
+  type: http
+  seq: 10
+}
+
+put {
+  url: {{base}}/api/perfil
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenUsuario}}
+}
+
+body:json {
+  { "nombre": "Ana" }
+}
+
+assert {
+  res.status: eq 403
+}

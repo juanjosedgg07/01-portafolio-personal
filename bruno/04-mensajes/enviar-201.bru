@@ -1,0 +1,19 @@
+meta {
+  name: Enviar mensaje (201)
+  type: http
+  seq: 22
+}
+
+post {
+  url: {{base}}/api/mensajes
+  body: json
+  auth: none
+}
+
+body:json {
+  { "nombre": "Prueba Bruno", "correo": "bruno@ejemplo.com", "texto": "Mensaje de prueba desde Bruno." }
+}
+
+assert {
+  res.status: eq 201
+}

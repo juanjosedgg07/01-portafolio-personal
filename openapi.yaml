@@ -1,0 +1,586 @@
+openapi: 3.1.0
+info:
+  title: API del Portafolio personal
+  version: 1.0.0
+  description: |
+    API REST del portafolio (Route Handlers de Next.js, Firestore vía Admin SDK y Vercel Blob).
+
+    **Autenticación:** cookie de sesión `sesion` (HttpOnly, Secure, SameSite=Lax) creada con
+    `POST /api/auth/sesion`. Para Bruno/Postman también se acepta `Authorization: Bearer <idToken>`.
+
+    **Errores:** siempre `{ "error": "mensaje", "detalles"?: [{ "campo", "mensaje" }] }`.
+    Sin sesión `401`; con sesión pero sin permiso `403`; recurso inexistente o ajeno `404`.
+
+    **CSRF:** en POST/PUT/PATCH/DELETE, si llega la cabecera `Origin` debe ser la del sitio (si no, `403`).
+servers:
+  - url: http://localhost:3000
+    description: Desarrollo
+  - url: https://{dominio}
+    description: Producción (Vercel)
+    variables:
+      dominio:
+        default: 01-portafolio-personal.vercel.app
+
+tags:
+  - name: Autenticación
+  - name: Perfil
+  - name: Proyectos
+  - name: Mensajes
+  - name: Archivos
+  - name: SEO
+
+security: []
+
+paths:
+  /api/auth/sesion:
+    post:
+      tags: [Autenticación]
+      summary: Crea la cookie de sesión a partir de un idToken reciente
+      description: El idToken se obtiene con `getIdToken()` tras iniciar sesión con Firebase Auth. Debe ser de un inicio de sesión de hace menos de 5 minutos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [idToken]
+              properties:
+                idToken: { type: string, minLength: 20 }
+      responses:
+        "204":
+          description: Sesión creada
+          headers:
+            Set-Cookie:
+              schema: { type: string }
+              example: sesion=…; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=432000
+        "400": { $ref: "#/components/responses/Validacion" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "415": { $ref: "#/components/responses/TipoNoPermitido" }
+        "429": { $ref: "#/components/responses/DemasiadasSolicitudes" }
+    delete:
+      tags: [Autenticación]
+      summary: Cierra la sesión (borra la cookie y revoca los refresh tokens)
+      responses:
+        "204": { description: Sesión cerrada }
+
+  /api/auth/yo:
+    get:
+      tags: [Autenticación]
+      summary: Usuario de la sesión actual
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      responses:
+        "200":
+          description: Usuario autenticado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  usuario: { $ref: "#/components/schemas/Usuario" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+
+  /api/perfil:
+    get:
+      tags: [Perfil]
+      summary: Perfil público (con caché s-maxage=60)
+      responses:
+        "200":
+          description: Perfil
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  perfil: { $ref: "#/components/schemas/Perfil" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+    put:
+      tags: [Perfil]
+      summary: Reemplaza el perfil (solo admin). La foto se cambia con /api/archivos.
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EntradaPerfil" }
+      responses:
+        "200":
+          description: Perfil guardado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  perfil: { $ref: "#/components/schemas/Perfil" }
+        "400": { $ref: "#/components/responses/Validacion" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+
+  /api/proyectos:
+    get:
+      tags: [Proyectos]
+      summary: Lista paginada de proyectos (publicados; con ?todos=1 el admin ve también borradores)
+      parameters:
+        - { $ref: "#/components/parameters/Limite" }
+        - name: cursor
+          in: query
+          description: Slug del último proyecto de la página anterior
+          schema: { type: string }
+        - name: todos
+          in: query
+          schema: { type: string, enum: ["0", "1"] }
+      responses:
+        "200":
+          description: Página de proyectos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/Proyecto" }
+                  siguienteCursor: { type: [string, "null"] }
+        "400": { $ref: "#/components/responses/Validacion" }
+    post:
+      tags: [Proyectos]
+      summary: Crea un proyecto (solo admin). El orden lo asigna el servidor.
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EntradaProyecto" }
+      responses:
+        "201":
+          description: Proyecto creado
+          headers:
+            Location: { schema: { type: string }, example: /api/proyectos/mi-proyecto }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  proyecto: { $ref: "#/components/schemas/Proyecto" }
+        "400": { $ref: "#/components/responses/Validacion" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+        "409": { $ref: "#/components/responses/Conflicto" }
+        "415": { $ref: "#/components/responses/TipoNoPermitido" }
+        "429": { $ref: "#/components/responses/DemasiadasSolicitudes" }
+
+  /api/proyectos/{slug}:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema: { $ref: "#/components/schemas/Slug" }
+    get:
+      tags: [Proyectos]
+      summary: Detalle de un proyecto (un borrador responde 404 a quien no es admin)
+      responses:
+        "200":
+          description: Proyecto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  proyecto: { $ref: "#/components/schemas/Proyecto" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+    put:
+      tags: [Proyectos]
+      summary: Edición parcial (solo admin). El slug y las imágenes no se editan aquí.
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CambiosProyecto" }
+      responses:
+        "200":
+          description: Proyecto actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  proyecto: { $ref: "#/components/schemas/Proyecto" }
+        "400": { $ref: "#/components/responses/Validacion" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+    delete:
+      tags: [Proyectos]
+      summary: Elimina el proyecto y sus imágenes de Blob (solo admin)
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      responses:
+        "204": { description: Eliminado }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+
+  /api/proyectos/orden:
+    put:
+      tags: [Proyectos]
+      summary: Reordena los proyectos (solo admin); el orden es la posición en la lista
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [slugs]
+              properties:
+                slugs:
+                  type: array
+                  minItems: 1
+                  maxItems: 100
+                  items: { $ref: "#/components/schemas/Slug" }
+      responses:
+        "204": { description: Orden guardado }
+        "400": { $ref: "#/components/responses/Validacion" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+
+  /api/mensajes:
+    post:
+      tags: [Mensajes]
+      summary: Envía un mensaje de contacto (público; 5 por IP cada 10 min; campo trampa)
+      description: Si el campo trampa `sitioWeb` trae texto se responde 201 pero no se guarda (no se le dan pistas al bot).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EntradaMensaje" }
+      responses:
+        "201":
+          description: Mensaje recibido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  recibido: { type: boolean, const: true }
+                  id: { type: [string, "null"] }
+        "400": { $ref: "#/components/responses/Validacion" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+        "415": { $ref: "#/components/responses/TipoNoPermitido" }
+        "429": { $ref: "#/components/responses/DemasiadasSolicitudes" }
+    get:
+      tags: [Mensajes]
+      summary: Bandeja de mensajes (solo el dueño), del más reciente al más antiguo
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      parameters:
+        - { $ref: "#/components/parameters/Limite" }
+        - name: cursor
+          in: query
+          description: Id del último mensaje de la página anterior
+          schema: { type: string }
+      responses:
+        "200":
+          description: Página de mensajes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/Mensaje" }
+                  siguienteCursor: { type: [string, "null"] }
+                  noLeidos: { type: integer }
+        "400": { $ref: "#/components/responses/Validacion" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+
+  /api/mensajes/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string, pattern: "^[A-Za-z0-9_-]{1,64}$" }
+    patch:
+      tags: [Mensajes]
+      summary: Marca un mensaje como leído o no leído (solo el dueño)
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [leido]
+              properties:
+                leido: { type: boolean }
+      responses:
+        "200":
+          description: Mensaje actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje: { $ref: "#/components/schemas/Mensaje" }
+        "400": { $ref: "#/components/responses/Validacion" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+    delete:
+      tags: [Mensajes]
+      summary: Elimina un mensaje (solo el dueño)
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      responses:
+        "204": { description: Eliminado }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+
+  /api/archivos/upload:
+    post:
+      tags: [Archivos]
+      summary: Emite el token de subida directa a Vercel Blob (handleUpload)
+      description: |
+        Lo llama `upload()` de `@vercel/blob/client`. En `onBeforeGenerateToken` se verifica la sesión (admin),
+        que el `pathname` empiece por `usuarios/<uid>/`, tipos permitidos (jpeg, png, webp, avif), tamaño máximo 2 MB,
+        sufijo aleatorio y el `uid` en `tokenPayload`. También recibe el aviso `blob.upload-completed` de Vercel Blob.
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, description: "HandleUploadBody de @vercel/blob" }
+      responses:
+        "200": { description: Token de cliente o confirmación del aviso }
+        "400": { $ref: "#/components/responses/Validacion" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+        "429": { $ref: "#/components/responses/DemasiadasSolicitudes" }
+
+  /api/archivos:
+    post:
+      tags: [Archivos]
+      summary: Registra un archivo ya subido en el perfil o en un proyecto (solo admin)
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [url, pathname, destino]
+              properties:
+                url: { type: string, format: uri }
+                pathname: { type: string, example: usuarios/UID/proyectos/mi-proyecto/captura-AbC123.webp }
+                destino: { $ref: "#/components/schemas/Destino" }
+      responses:
+        "201": { description: Registrado }
+        "400": { $ref: "#/components/responses/Validacion" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+    delete:
+      tags: [Archivos]
+      summary: Borra un archivo de Blob y lo quita del perfil o proyecto (solo si es del usuario)
+      security: [{ cookieSesion: [] }, { bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [url, destino]
+              properties:
+                url: { type: string, format: uri }
+                destino: { $ref: "#/components/schemas/Destino" }
+      responses:
+        "204": { description: Eliminado }
+        "400": { $ref: "#/components/responses/Validacion" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/Prohibido" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+
+  /sitemap.xml:
+    get:
+      tags: [SEO]
+      summary: Sitemap generado desde Firestore (proyectos publicados)
+      responses:
+        "200":
+          description: XML del sitemap
+          content:
+            application/xml: { schema: { type: string } }
+
+components:
+  securitySchemes:
+    cookieSesion:
+      type: apiKey
+      in: cookie
+      name: sesion
+    bearer:
+      type: http
+      scheme: bearer
+      description: idToken de Firebase Auth (solo para pruebas con Bruno/Postman)
+
+  parameters:
+    Limite:
+      name: limite
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }
+        detalles:
+          type: array
+          items:
+            type: object
+            properties:
+              campo: { type: string }
+              mensaje: { type: string }
+    Usuario:
+      type: object
+      properties:
+        uid: { type: string }
+        correo: { type: [string, "null"] }
+        rol: { type: string, enum: [admin, usuario] }
+    Slug:
+      type: string
+      minLength: 2
+      maxLength: 60
+      pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      description: Minúsculas, números y guiones. "orden" está reservado.
+    EntradaPerfil:
+      type: object
+      additionalProperties: false
+      required: [nombre, titular, bio, correo, habilidades, enlaces]
+      properties:
+        nombre: { type: string, minLength: 2, maxLength: 80 }
+        titular: { type: string, minLength: 2, maxLength: 120 }
+        bio: { type: string, minLength: 10, maxLength: 1500 }
+        correo: { type: string, format: email }
+        habilidades: { type: array, maxItems: 40, items: { type: string, maxLength: 40 } }
+        enlaces:
+          type: object
+          additionalProperties: false
+          properties:
+            github: { type: string, format: uri }
+            linkedin: { type: string, format: uri }
+            sitio: { type: string, format: uri }
+    Perfil:
+      allOf:
+        - $ref: "#/components/schemas/EntradaPerfil"
+        - type: object
+          properties:
+            fotoUrl: { type: [string, "null"], format: uri }
+    EntradaProyecto:
+      type: object
+      additionalProperties: false
+      required: [slug, titulo, descripcion]
+      properties:
+        slug: { $ref: "#/components/schemas/Slug" }
+        titulo: { type: string, minLength: 2, maxLength: 100 }
+        descripcion: { type: string, minLength: 10, maxLength: 2000 }
+        tecnologias: { type: array, maxItems: 20, items: { type: string, maxLength: 40 }, default: [] }
+        enlace: { type: [string, "null"], format: uri, default: null }
+        publicado: { type: boolean, default: true }
+    CambiosProyecto:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        titulo: { type: string, minLength: 2, maxLength: 100 }
+        descripcion: { type: string, minLength: 10, maxLength: 2000 }
+        tecnologias: { type: array, items: { type: string } }
+        enlace: { type: [string, "null"], format: uri }
+        publicado: { type: boolean }
+    Proyecto:
+      type: object
+      properties:
+        slug: { $ref: "#/components/schemas/Slug" }
+        titulo: { type: string }
+        descripcion: { type: string }
+        tecnologias: { type: array, items: { type: string } }
+        imagenes: { type: array, items: { type: string } }
+        enlace: { type: [string, "null"] }
+        orden: { type: integer }
+        publicado: { type: boolean }
+    EntradaMensaje:
+      type: object
+      additionalProperties: false
+      required: [nombre, correo, texto]
+      properties:
+        nombre: { type: string, minLength: 2, maxLength: 80 }
+        correo: { type: string, format: email }
+        texto: { type: string, minLength: 10, maxLength: 1000 }
+        sitioWeb: { type: string, description: "Campo trampa: debe ir vacío" }
+    Mensaje:
+      type: object
+      properties:
+        id: { type: string }
+        nombre: { type: string }
+        correo: { type: string }
+        texto: { type: string }
+        creadoEn: { type: string, format: date-time }
+        leido: { type: boolean }
+    Destino:
+      oneOf:
+        - type: object
+          additionalProperties: false
+          required: [tipo]
+          properties:
+            tipo: { const: perfil }
+        - type: object
+          additionalProperties: false
+          required: [tipo, slug]
+          properties:
+            tipo: { const: proyecto }
+            slug: { $ref: "#/components/schemas/Slug" }
+
+  responses:
+    Validacion:
+      description: Datos no válidos (detalle por campo)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example: { error: "Datos no válidos.", detalles: [{ campo: correo, mensaje: "Escriba un correo válido." }] }
+    NoAutenticado:
+      description: Sin sesión o sesión no válida
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example: { error: "Debe iniciar sesión." }
+    Prohibido:
+      description: Con sesión pero sin permiso, u Origin de otro sitio
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example: { error: "No tiene permiso para esta acción." }
+    NoEncontrado:
+      description: No existe o no es visible para usted
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Conflicto:
+      description: Duplicado (por ejemplo, slug ya usado)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    TipoNoPermitido:
+      description: El cuerpo no es application/json
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    DemasiadasSolicitudes:
+      description: Límite de frecuencia superado
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }

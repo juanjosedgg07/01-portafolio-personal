@@ -1,0 +1,23 @@
+meta {
+  name: Crear sin rol admin (403)
+  type: http
+  seq: 17
+}
+
+post {
+  url: {{base}}/api/proyectos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenUsuario}}
+}
+
+body:json {
+  { "slug": "x-y", "titulo": "Título", "descripcion": "Descripción larga." }
+}
+
+assert {
+  res.status: eq 403
+}

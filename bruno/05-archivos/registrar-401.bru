@@ -1,0 +1,19 @@
+meta {
+  name: Registrar sin sesión (401)
+  type: http
+  seq: 30
+}
+
+post {
+  url: {{base}}/api/archivos
+  body: json
+  auth: none
+}
+
+body:json {
+  { "url": "https://x.public.blob.vercel-storage.com/a.webp", "pathname": "a.webp", "destino": { "tipo": "perfil" } }
+}
+
+assert {
+  res.status: eq 401
+}

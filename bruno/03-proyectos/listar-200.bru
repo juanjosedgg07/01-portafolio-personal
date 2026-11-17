@@ -1,0 +1,15 @@
+meta {
+  name: Listar proyectos (200)
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{base}}/api/proyectos?limite=2
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

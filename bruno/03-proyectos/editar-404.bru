@@ -1,0 +1,23 @@
+meta {
+  name: Editar inexistente (404)
+  type: http
+  seq: 20
+}
+
+put {
+  url: {{base}}/api/proyectos/no-existe
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+body:json {
+  { "titulo": "Nuevo" }
+}
+
+assert {
+  res.status: eq 404
+}

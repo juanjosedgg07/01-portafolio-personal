@@ -1,0 +1,23 @@
+meta {
+  name: Crear proyecto repetido (409)
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{base}}/api/proyectos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+body:json {
+  { "slug": "proyecto-bruno", "titulo": "Proyecto de prueba", "descripcion": "Creado desde la colección de Bruno." }
+}
+
+assert {
+  res.status: eq 409
+}

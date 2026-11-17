@@ -1,0 +1,19 @@
+meta {
+  name: Eliminar proyecto (204)
+  type: http
+  seq: 21
+}
+
+delete {
+  url: {{base}}/api/proyectos/proyecto-bruno
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+assert {
+  res.status: eq 204
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Bandeja (200)
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{base}}/api/mensajes?limite=10
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+assert {
+  res.status: eq 200
+}

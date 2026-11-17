@@ -1,0 +1,19 @@
+meta {
+  name: Crear sesión sin idToken (400)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base}}/api/auth/sesion
+  body: json
+  auth: none
+}
+
+body:json {
+  {}
+}
+
+assert {
+  res.status: eq 400
+}

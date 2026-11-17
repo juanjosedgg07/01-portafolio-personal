@@ -1,0 +1,19 @@
+meta {
+  name: Bandeja sin rol admin (403)
+  type: http
+  seq: 26
+}
+
+get {
+  url: {{base}}/api/mensajes
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenUsuario}}
+}
+
+assert {
+  res.status: eq 403
+}

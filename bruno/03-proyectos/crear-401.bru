@@ -1,0 +1,19 @@
+meta {
+  name: Crear sin sesión (401)
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{base}}/api/proyectos
+  body: json
+  auth: none
+}
+
+body:json {
+  { "slug": "x-y", "titulo": "Título", "descripcion": "Descripción larga." }
+}
+
+assert {
+  res.status: eq 401
+}

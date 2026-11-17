@@ -1,0 +1,23 @@
+meta {
+  name: Registrar sin destino (400)
+  type: http
+  seq: 29
+}
+
+post {
+  url: {{base}}/api/archivos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+body:json {
+  { "url": "https://x.public.blob.vercel-storage.com/a.webp" }
+}
+
+assert {
+  res.status: eq 400
+}

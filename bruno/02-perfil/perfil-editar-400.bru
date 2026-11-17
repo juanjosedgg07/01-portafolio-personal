@@ -1,0 +1,23 @@
+meta {
+  name: Editar perfil inválido (400)
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{base}}/api/perfil
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+body:json {
+  { "nombre": "A" }
+}
+
+assert {
+  res.status: eq 400
+}

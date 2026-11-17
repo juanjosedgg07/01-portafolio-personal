@@ -1,0 +1,23 @@
+meta {
+  name: Marcar inexistente (404)
+  type: http
+  seq: 27
+}
+
+patch {
+  url: {{base}}/api/mensajes/no-existe
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+body:json {
+  { "leido": true }
+}
+
+assert {
+  res.status: eq 404
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Ver perfil (200)
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base}}/api/perfil
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Editar proyecto (200)
+  type: http
+  seq: 19
+}
+
+put {
+  url: {{base}}/api/proyectos/proyecto-bruno
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{idTokenAdmin}}
+}
+
+body:json {
+  { "titulo": "Proyecto de prueba (editado)" }
+}
+
+assert {
+  res.status: eq 200
+}
