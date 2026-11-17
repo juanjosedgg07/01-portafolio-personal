@@ -68,13 +68,13 @@ describe("La IA no puede salir de la carpeta del proyecto", () => {
   });
 });
 
-describe("El hook real responde como espera Claude Code", () => {
-  const hook = path.join(RAIZ, ".claude", "hooks", "proteger.mjs");
+describe("El hook real responde como espera el asistente (exit 2 = bloqueado)", () => {
+  const hook = path.join(RAIZ, "ia", "hooks", "proteger.mjs");
   const ejecutar = (entrada) =>
     spawnSync(process.execPath, [hook], {
       input: JSON.stringify(entrada),
       encoding: "utf8",
-      env: { ...process.env, CLAUDE_PROJECT_DIR: RAIZ },
+      env: { ...process.env, IA_PROYECTO_DIR: RAIZ },
     });
 
   it("sale con código 2 y explica el motivo al leer .env.local", () => {

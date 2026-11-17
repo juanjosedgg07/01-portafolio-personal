@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "defaultMode": "default",
     "deny": [
@@ -13,9 +12,10 @@
       "Read(**/*firebase-adminsdk*.json)",
       "Read(./.vercel/**)",
       "Edit(./.env*)",
-      "Edit(./.claude/settings.json)",
-      "Edit(./.claude/hooks/**)",
+      "Edit(./ia/permisos.json)",
+      "Edit(./ia/hooks/**)",
       "Edit(./ia/politica.mjs)",
+      "Edit(./ia/instalar.mjs)",
       "Bash(cat .env*)",
       "Bash(type .env*)",
       "Bash(printenv*)",
@@ -46,13 +46,13 @@
     "PreToolUse": [
       {
         "matcher": "Read|Write|Edit|NotebookEdit|Glob|Grep|Bash|PowerShell",
-        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/proteger.mjs\"" }]
+        "hooks": [{ "type": "command", "command": "node ia/hooks/proteger.mjs" }]
       }
     ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
-        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/calidad.mjs\"" }]
+        "hooks": [{ "type": "command", "command": "node ia/hooks/calidad.mjs" }]
       }
     ]
   }

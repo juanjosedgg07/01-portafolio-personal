@@ -62,7 +62,60 @@
   }
 }
 
-/* Alto contraste */
+/* Océano: oscuro azul profundo */
+:root[data-theme="oceano"] {
+  --fondo: #0b1420;
+  --superficie: #111d2c;
+  --superficie-2: #17263a;
+  --texto: #e6eef7;
+  --texto-suave: #a9bccf;
+  --borde: #27405c;
+  --acento: #6cc4ff;
+  --acento-texto: #04121f;
+  --acento-suave: #12314a;
+  --peligro: #ff9a8f;
+  --exito: #7fe0a8;
+  --foco: #ffd166;
+  --sombra: 0 1px 2px rgb(0 0 0 / 0.45), 0 6px 20px rgb(0 0 0 / 0.35);
+  color-scheme: dark;
+}
+
+/* Arena: claro cálido */
+:root[data-theme="arena"] {
+  --fondo: #fbf6ee;
+  --superficie: #fffdf9;
+  --superficie-2: #f3eadb;
+  --texto: #2a1f14;
+  --texto-suave: #5e4c3a;
+  --borde: #e0d2bc;
+  --acento: #9c3d16;
+  --acento-texto: #ffffff;
+  --acento-suave: #f6e2d3;
+  --peligro: #a3261b;
+  --exito: #2f6b2a;
+  --foco: #1d4ed8;
+  color-scheme: light;
+}
+
+/* Alto contraste: negro, blanco y amarillo (WCAG AAA en texto) */
+:root[data-theme="contraste"] {
+  --fondo: #000000;
+  --superficie: #000000;
+  --superficie-2: #141414;
+  --texto: #ffffff;
+  --texto-suave: #ffffff;
+  --borde: #ffffff;
+  --acento: #ffeb3b;
+  --acento-texto: #000000;
+  --acento-suave: #1f1f1f;
+  --peligro: #ff8a80;
+  --exito: #b9f6ca;
+  --foco: #00e5ff;
+  --sombra: none;
+  color-scheme: dark;
+}
+
+/* Alto contraste del sistema */
 @media (prefers-contrast: more) {
   :root {
     --texto-suave: var(--texto);

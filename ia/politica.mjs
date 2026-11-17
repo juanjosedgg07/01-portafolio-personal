@@ -1,5 +1,5 @@
 // Política de seguridad para el asistente de IA del proyecto.
-// La usan los hooks de .claude/hooks y las pruebas de ia/pruebas.
+// La usan los hooks de ia/hooks y las pruebas de ia/pruebas.
 // Función pura: recibe la llamada a herramienta y la raíz del proyecto
 // y devuelve { permitido, motivo }.
 import path from "node:path";

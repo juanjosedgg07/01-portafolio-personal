@@ -13,7 +13,7 @@ process.stdin.on("end", () => {
     process.exit(0);
   }
   const r = spawnSync("npx", ["eslint", "--max-warnings", "0", archivo], {
-    cwd: process.env.CLAUDE_PROJECT_DIR || process.cwd(),
+    cwd: process.env.IA_PROYECTO_DIR || process.cwd(),
     encoding: "utf8",
     shell: true,
   });

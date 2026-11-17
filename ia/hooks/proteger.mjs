@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Hook PreToolUse: bloquea (exit 2) lecturas de secretos y accesos fuera del proyecto.
-import { evaluar } from "../../ia/politica.mjs";
+import { evaluar } from "../politica.mjs";
 
 let datos = "";
 process.stdin.setEncoding("utf8");
@@ -13,7 +13,7 @@ process.stdin.on("end", () => {
     process.stderr.write("Hook proteger: entrada no válida; se bloquea por precaución.\n");
     process.exit(2);
   }
-  const raiz = process.env.CLAUDE_PROJECT_DIR || llamada.cwd || process.cwd();
+  const raiz = process.env.IA_PROYECTO_DIR || llamada.cwd || process.cwd();
   const { permitido, motivo } = evaluar(llamada, raiz);
   if (!permitido) {
     process.stderr.write(`Bloqueado por la política del proyecto: ${motivo}\n`);

@@ -85,7 +85,7 @@ src/components, hooks   UI accesible reutilizable (useDebounce, usePolling, useS
 tests/                  Vitest (componentes, api, integracion) y Playwright (e2e)
 openapi.yaml · bruno/   documentación y colección de solicitudes
 calidad/ · CALIDAD.md   evidencias de calidad (sección 14)
-ia/ · CLAUDE.md · .claude/   configuración de IA y sus evidencias (sección 15)
+ia/ · AGENTS.md          configuración de IA y sus evidencias (sección 15)
 ```
 
 ## Seguridad (resumen)

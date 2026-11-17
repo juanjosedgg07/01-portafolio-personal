@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import Link from "next/link";
 import { Encabezado } from "@/src/components/Encabezado";
-import { scriptTema } from "@/src/components/InterruptorTema";
+import { scriptTema } from "@/src/lib/temas";
 import { perfilServicio } from "@/src/services/perfilServicio";
 import { urlSitio } from "@/src/lib/sitio";
 import "./globals.css";

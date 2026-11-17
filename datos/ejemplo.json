@@ -2,29 +2,29 @@
   "perfil": {
     "nombre": "Juan José",
     "titular": "Desarrollador web full-stack en formación",
-    "bio": "Estudiante de desarrollo de software. Construyo aplicaciones web accesibles y rápidas con Next.js, React, TypeScript y Firebase. Me interesan el diseño de APIs, la accesibilidad y el rendimiento.",
-    "correo": "contacto@ejemplo.com",
+    "bio": "Estudiante de desarrollo de software. Construyo aplicaciones web accesibles y rápidas con Next.js, React, TypeScript y Firebase. Me interesan el diseño de APIs seguras, la accesibilidad y el rendimiento.",
+    "correo": "juanjosedgg07@gmail.com",
     "fotoUrl": null,
-    "habilidades": ["TypeScript", "React", "Next.js", "Node.js", "Firebase", "Accesibilidad web", "Pruebas con Vitest", "Git"],
+    "habilidades": ["TypeScript", "React", "Next.js", "Node.js", "Firebase", "Zod", "Vitest", "Git", "CSS", "HTML", "OpenAPI", "Vercel"],
     "enlaces": { "github": "https://github.com/juanjosedgg07" }
   },
   "proyectos": [
     {
       "slug": "portafolio-personal",
       "titulo": "Portafolio personal",
-      "descripcion": "Este mismo sitio: portafolio con panel privado de edición, API REST por capas en Next.js, Firebase Auth con cookie de sesión, Firestore vía Admin SDK y archivos en Vercel Blob.",
-      "tecnologias": ["Next.js", "TypeScript", "Firebase", "Vercel Blob", "Zod"],
-      "imagenes": ["/ejemplo/portafolio.svg"],
-      "enlace": null,
+      "descripcion": "Este mismo sitio: portafolio con panel privado de edición, API REST por capas en Next.js, Firebase Auth con cookie de sesión HttpOnly, Firestore vía Admin SDK y archivos en Vercel Blob.\n\nIncluye cinco temas visuales, pruebas automáticas de accesibilidad en tres anchos y una configuración de IA con restricciones verificadas.",
+      "tecnologias": ["Next.js", "TypeScript", "Firebase", "Vercel", "Zod", "Vitest"],
+      "imagenes": ["/ejemplo/portafolio-personal-1.svg", "/ejemplo/portafolio-personal-2.svg", "/ejemplo/portafolio-personal-3.svg"],
+      "enlace": "https://01-portafolio-personal.vercel.app",
       "orden": 1,
       "publicado": true
     },
     {
       "slug": "gestor-de-tareas",
       "titulo": "Gestor de tareas",
-      "descripcion": "Aplicación de tareas con listas, etiquetas y filtros, pensada para usarse solo con teclado y con lector de pantalla.",
-      "tecnologias": ["React", "TypeScript", "CSS Grid"],
-      "imagenes": ["/ejemplo/tareas.svg"],
+      "descripcion": "Tablero Kanban y lista diaria de tareas con etiquetas, filtros y progreso. Pensado para usarse solo con teclado y con lector de pantalla: arrastrar y soltar tiene alternativa con botones.\n\nSincroniza los cambios con una API y guarda una copia local para funcionar sin conexión.",
+      "tecnologias": ["React", "TypeScript", "CSS", "Node.js"],
+      "imagenes": ["/ejemplo/gestor-de-tareas-1.svg", "/ejemplo/gestor-de-tareas-2.svg", "/ejemplo/gestor-de-tareas-3.svg"],
       "enlace": null,
       "orden": 2,
       "publicado": true
@@ -32,11 +32,41 @@
     {
       "slug": "api-de-clima",
       "titulo": "API de clima",
-      "descripcion": "API REST que consulta y guarda en caché datos meteorológicos, con validación de entradas, límites de frecuencia y documentación OpenAPI.",
-      "tecnologias": ["Node.js", "Zod", "OpenAPI"],
-      "imagenes": ["/ejemplo/clima.svg"],
+      "descripcion": "API REST que consulta y guarda en caché datos meteorológicos, con validación de entradas, límites de frecuencia y documentación OpenAPI. Incluye un panel con el pronóstico de la semana y la calidad del aire.\n\nLas respuestas de error siguen un formato común y están probadas automáticamente.",
+      "tecnologias": ["Node.js", "Express", "Zod", "OpenAPI"],
+      "imagenes": ["/ejemplo/api-de-clima-1.svg", "/ejemplo/api-de-clima-2.svg", "/ejemplo/api-de-clima-3.svg"],
       "enlace": null,
       "orden": 3,
+      "publicado": true
+    },
+    {
+      "slug": "tienda-en-linea",
+      "titulo": "Tienda en línea",
+      "descripcion": "Catálogo de productos artesanales con carrito, cupones y pago seguro. Los precios y el total los calcula siempre el servidor; el cliente nunca decide cuánto se cobra.\n\nLos montos se guardan como enteros en centavos para evitar errores de redondeo.",
+      "tecnologias": ["Next.js", "Stripe", "PostgreSQL", "Tailwind CSS"],
+      "imagenes": ["/ejemplo/tienda-en-linea-1.svg", "/ejemplo/tienda-en-linea-2.svg", "/ejemplo/tienda-en-linea-3.svg"],
+      "enlace": null,
+      "orden": 4,
+      "publicado": true
+    },
+    {
+      "slug": "panel-de-metricas",
+      "titulo": "Panel de métricas",
+      "descripcion": "Tablero de analítica con indicadores clave, gráficos de visitas y tráfico por canal, y reportes por página. Mide las Core Web Vitals reales (p75) del sitio y las compara mes a mes.\n\nLos gráficos tienen tabla de datos alternativa para lectores de pantalla.",
+      "tecnologias": ["React", "Chart.js", "Firebase", "TypeScript"],
+      "imagenes": ["/ejemplo/panel-de-metricas-1.svg", "/ejemplo/panel-de-metricas-2.svg", "/ejemplo/panel-de-metricas-3.svg"],
+      "enlace": null,
+      "orden": 5,
+      "publicado": true
+    },
+    {
+      "slug": "chat-en-tiempo-real",
+      "titulo": "Chat en tiempo real",
+      "descripcion": "Mensajería para equipos con canales, indicador de «escribiendo», presencia en línea y videollamadas. Los mensajes nuevos se anuncian a lectores de pantalla sin interrumpir.\n\nCada usuario solo puede leer los canales de los que es miembro (autorización por objeto).",
+      "tecnologias": ["Node.js", "Socket.IO", "MongoDB", "React"],
+      "imagenes": ["/ejemplo/chat-en-tiempo-real-1.svg", "/ejemplo/chat-en-tiempo-real-2.svg", "/ejemplo/chat-en-tiempo-real-3.svg"],
+      "enlace": null,
+      "orden": 6,
       "publicado": true
     }
   ]
