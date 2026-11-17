@@ -23,35 +23,81 @@
   margin-bottom: 1.5rem;
 }
 
+.portada {
+  border-radius: calc(var(--radio) * 1.5);
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  box-shadow: var(--sombra), 0 24px 60px color-mix(in srgb, var(--acento) 18%, transparent);
+  margin-bottom: 2.5rem;
+}
+
+.cuerpo {
+  display: grid;
+  gap: 2rem;
+}
+
+.subtitulo {
+  font-size: 1.5rem;
+}
+
 .descripcion {
   font-size: 1.125rem;
 }
 
-.galeria {
-  margin-block: 2.5rem;
+.ficha {
+  align-self: start;
+  padding: 1.5rem;
+  border-radius: var(--radio);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
 }
 
-.imagenes {
+.fichaTitulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.15rem;
+  font-family: var(--fuente);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.fichaEtiqueta {
+  font-family: var(--fuente);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  margin: 1.25rem 0 0.5rem;
+}
+
+.fichaDato {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+.fichaAcciones {
   display: grid;
-  gap: var(--espacio);
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.galeria {
+  margin-block: 3rem;
 }
 
 @media (min-width: 64rem) {
-  .imagenes {
-    grid-template-columns: repeat(2, 1fr);
+  .cuerpo {
+    grid-template-columns: 1fr 22rem;
+    align-items: start;
   }
-}
 
-.figura {
-  margin: 0;
-  border-radius: var(--radio);
-  overflow: hidden;
-  border: 1px solid var(--borde);
-  background: var(--superficie);
-}
-
-.figura figcaption {
-  padding: 0.6rem 1rem;
-  font-size: 0.9rem;
-  color: var(--texto-suave);
+  .ficha {
+    position: sticky;
+    top: calc(var(--cabecera) + 1.5rem);
+  }
 }

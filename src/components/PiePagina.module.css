@@ -1,0 +1,82 @@
+.pie {
+  margin-top: auto;
+  padding-top: 3rem;
+  background: var(--superficie-2);
+  border-top: 1px solid var(--borde);
+}
+
+.rejilla {
+  display: grid;
+  gap: 2rem;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 48rem) {
+  .rejilla {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+.marca {
+  font-family: var(--fuente-titulos);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.texto {
+  color: var(--texto-suave);
+  margin-bottom: 0.5rem;
+}
+
+.titulo {
+  font-family: var(--fuente);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  margin-bottom: 0.5rem;
+}
+
+.lista {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  color: var(--texto);
+  text-decoration: none;
+}
+
+.enlace:hover {
+  color: var(--acento);
+  text-decoration: underline;
+}
+
+.base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding-block: 1rem;
+  border-top: 1px solid var(--borde);
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+.base p {
+  margin: 0;
+}
+
+@media print {
+  .pie {
+    background: none;
+    padding-top: 1rem;
+  }
+}

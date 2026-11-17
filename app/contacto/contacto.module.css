@@ -1,0 +1,75 @@
+.intro {
+  color: var(--texto-suave);
+  font-size: 1.125rem;
+}
+
+.rejilla {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.info {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.tarjeta {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: var(--radio);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+}
+
+.tarjeta p {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.tituloTarjeta {
+  font-family: var(--fuente);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.icono {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  background: var(--acento-suave);
+  color: var(--acento);
+}
+
+.formulario {
+  padding: clamp(1.25rem, 1rem + 2vw, 2rem);
+  border-radius: calc(var(--radio) * 1.5);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  box-shadow: var(--sombra);
+}
+
+.tituloFormulario {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.4rem;
+  color: var(--texto);
+}
+
+.tituloFormulario svg {
+  color: var(--acento);
+}
+
+@media (min-width: 64rem) {
+  .rejilla {
+    grid-template-columns: 22rem 1fr;
+    align-items: start;
+  }
+}

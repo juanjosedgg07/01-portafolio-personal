@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft, ExternalLink, Images, Layers, Send } from "lucide-react";
 import { ImagenProyecto } from "@/src/components/ImagenProyecto";
+import { Galeria } from "@/src/components/Galeria";
 import { JsonLd } from "@/src/components/JsonLd";
+import { EtiquetaTecnologia } from "@/src/components/IconoTecnologia";
 import { proyectosServicio } from "@/src/services/proyectosServicio";
 import { esquemaSlug } from "@/src/schemas/proyecto";
 import { urlSitio } from "@/src/lib/sitio";
@@ -45,6 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function DetalleProyecto({ params }: Props) {
   const proyecto = await cargar((await params).slug);
   if (!proyecto) notFound();
+  const portada = proyecto.imagenes[0];
 
   return (
     <article className="contenedor seccion">
@@ -71,59 +75,71 @@ export default async function DetalleProyecto({ params }: Props) {
       </nav>
 
       <header className={estilos.cabecera}>
+        <p className="antetitulo">Proyecto</p>
         <h1>{proyecto.titulo}</h1>
-        {proyecto.tecnologias.length > 0 && (
-          <ul role="list" className="lista-etiquetas" aria-label="Tecnologías">
-            {proyecto.tecnologias.map((t) => (
-              <li key={t} className="etiqueta">
-                {t}
-              </li>
-            ))}
-          </ul>
-        )}
       </header>
 
-      <div className={estilos.descripcion}>
-        {proyecto.descripcion.split(/\n{2,}/).map((parrafo, i) => (
-          <p key={i}>{parrafo}</p>
-        ))}
-      </div>
-
-      {proyecto.enlace && (
-        <p>
-          <a className="boton" href={proyecto.enlace} target="_blank" rel="noopener noreferrer">
-            Ver el proyecto en línea<span className="solo-lectores"> (se abre en una pestaña nueva)</span>
-          </a>
-        </p>
+      {portada && (
+        <div className={estilos.portada}>
+          <ImagenProyecto src={portada} alt={`Vista principal del proyecto ${proyecto.titulo}`} prioridad sizes="(min-width: 72rem) 72rem, 100vw" />
+        </div>
       )}
+
+      <div className={estilos.cuerpo}>
+        <div className={estilos.descripcion}>
+          <h2 className={estilos.subtitulo}>Sobre el proyecto</h2>
+          {proyecto.descripcion.split(/\n{2,}/).map((parrafo, i) => (
+            <p key={i}>{parrafo}</p>
+          ))}
+        </div>
+
+        <aside className={estilos.ficha} aria-labelledby="titulo-ficha">
+          <h2 id="titulo-ficha" className={estilos.fichaTitulo}>
+            <Layers aria-hidden="true" size={18} /> Ficha técnica
+          </h2>
+          {proyecto.tecnologias.length > 0 && (
+            <>
+              <h3 className={estilos.fichaEtiqueta}>Tecnologías</h3>
+              <ul role="list" className="lista-etiquetas">
+                {proyecto.tecnologias.map((t) => (
+                  <li key={t}>
+                    <EtiquetaTecnologia nombre={t} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          <h3 className={estilos.fichaEtiqueta}>Capturas</h3>
+          <p className={estilos.fichaDato}>
+            <Images aria-hidden="true" size={16} /> {proyecto.imagenes.length}
+          </p>
+          <div className={`${estilos.fichaAcciones} no-imprimir`}>
+            {proyecto.enlace && (
+              <a className="boton" href={proyecto.enlace} target="_blank" rel="noopener noreferrer">
+                <ExternalLink aria-hidden="true" size={18} /> Ver en línea
+                <span className="solo-lectores"> (se abre en una pestaña nueva)</span>
+              </a>
+            )}
+            <Link className="boton boton--secundario" href="/contacto">
+              <Send aria-hidden="true" size={18} /> Preguntar por este proyecto
+            </Link>
+          </div>
+        </aside>
+      </div>
 
       <section aria-labelledby="titulo-galeria" className={estilos.galeria}>
         <h2 id="titulo-galeria">Galería</h2>
         {proyecto.imagenes.length === 0 ? (
           <p className="aviso">Este proyecto aún no tiene capturas.</p>
         ) : (
-          <ul role="list" className={estilos.imagenes}>
-            {proyecto.imagenes.map((src, i) => (
-              <li key={src}>
-                <figure className={estilos.figura}>
-                  <ImagenProyecto
-                    src={src}
-                    alt={`Captura ${i + 1} de ${proyecto.imagenes.length} del proyecto ${proyecto.titulo}`}
-                    prioridad={i === 0}
-                    sizes="(min-width: 64rem) 50vw, 100vw"
-                  />
-                  <figcaption>
-                    Captura {i + 1} de {proyecto.imagenes.length}
-                  </figcaption>
-                </figure>
-              </li>
-            ))}
-          </ul>
+          <Galeria imagenes={proyecto.imagenes} titulo={proyecto.titulo} />
         )}
       </section>
 
       <p className="no-imprimir">
-        <Link href="/#proyectos">← Volver a los proyectos</Link>
+        <Link href="/proyectos" className="enlace-flecha">
+          <ArrowLeft aria-hidden="true" size={18} /> Volver a los proyectos
+        </Link>
       </p>
     </article>
   );

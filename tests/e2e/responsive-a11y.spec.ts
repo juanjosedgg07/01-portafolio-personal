@@ -11,6 +11,8 @@ const PAGINAS = [
 
 for (const { ruta, nombre } of PAGINAS) {
   test(`${nombre}: sin scroll horizontal, un solo h1 y 0 violaciones de axe`, async ({ page }, info) => {
+    // Movimiento reducido: la animación de «revelar» no oculta contenido en las capturas de evidencia.
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(ruta);
     await page.waitForLoadState("networkidle");
 
@@ -64,3 +66,18 @@ test("sin sesión, /admin redirige al login", async ({ page }) => {
   await page.goto("/admin");
   await expect(page).toHaveURL(/\/login\?volver=%2Fadmin/);
 });
+
+for (const tema of ["claro", "oscuro", "oceano", "arena", "contraste"]) {
+  test(`tema ${tema}: 0 violaciones de axe (incluido contraste) en portada y contacto`, async ({ page }, info) => {
+    test.skip(info.project.name !== "escritorio-1024", "basta con un ancho por tema");
+    await page.addInitScript((t) => localStorage.setItem("tema", t), tema);
+    for (const ruta of ["/", "/contacto", "/proyectos"]) {
+      await page.goto(ruta);
+      await expect(page.locator("html")).toHaveAttribute("data-theme", tema);
+      const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+      expect(axe.violations.map((v) => `${ruta} ${v.id}: ${v.nodes.map((n) => n.target.join(" ")).slice(0, 3).join(" | ")}`)).toEqual([]);
+    }
+    await page.goto("/");
+    await page.screenshot({ path: `calidad/capturas/tema-${tema}.png` });
+  });
+}

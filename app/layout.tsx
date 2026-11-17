@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
-import Link from "next/link";
+import { PiePagina } from "@/src/components/PiePagina";
 import { Encabezado } from "@/src/components/Encabezado";
 import { scriptTema } from "@/src/lib/temas";
 import { perfilServicio } from "@/src/services/perfilServicio";
@@ -46,21 +46,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <main id="contenido" tabIndex={-1}>
           {children}
         </main>
-        <footer className="contenedor" style={{ paddingBlock: "2rem", borderTop: "1px solid var(--borde)" }}>
-          <nav aria-label="Pie de página">
-            <ul role="list" style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
-              <li>
-                <Link href="/contacto">Contacto</Link>
-              </li>
-              <li>
-                <Link href="/admin">Panel privado</Link>
-              </li>
-            </ul>
-          </nav>
-          <p className="campo__ayuda">
-            © {new Date().getFullYear()} {nombre}. Hecho con Next.js, Firebase y Vercel.
-          </p>
-        </footer>
+        <PiePagina perfil={perfil} />
       </body>
     </html>
   );
