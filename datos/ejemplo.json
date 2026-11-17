@@ -1,0 +1,43 @@
+{
+  "perfil": {
+    "nombre": "Juan José",
+    "titular": "Desarrollador web full-stack en formación",
+    "bio": "Estudiante de desarrollo de software. Construyo aplicaciones web accesibles y rápidas con Next.js, React, TypeScript y Firebase. Me interesan el diseño de APIs, la accesibilidad y el rendimiento.",
+    "correo": "contacto@ejemplo.com",
+    "fotoUrl": null,
+    "habilidades": ["TypeScript", "React", "Next.js", "Node.js", "Firebase", "Accesibilidad web", "Pruebas con Vitest", "Git"],
+    "enlaces": { "github": "https://github.com/juanjosedgg07" }
+  },
+  "proyectos": [
+    {
+      "slug": "portafolio-personal",
+      "titulo": "Portafolio personal",
+      "descripcion": "Este mismo sitio: portafolio con panel privado de edición, API REST por capas en Next.js, Firebase Auth con cookie de sesión, Firestore vía Admin SDK y archivos en Vercel Blob.",
+      "tecnologias": ["Next.js", "TypeScript", "Firebase", "Vercel Blob", "Zod"],
+      "imagenes": ["/ejemplo/portafolio.svg"],
+      "enlace": null,
+      "orden": 1,
+      "publicado": true
+    },
+    {
+      "slug": "gestor-de-tareas",
+      "titulo": "Gestor de tareas",
+      "descripcion": "Aplicación de tareas con listas, etiquetas y filtros, pensada para usarse solo con teclado y con lector de pantalla.",
+      "tecnologias": ["React", "TypeScript", "CSS Grid"],
+      "imagenes": ["/ejemplo/tareas.svg"],
+      "enlace": null,
+      "orden": 2,
+      "publicado": true
+    },
+    {
+      "slug": "api-de-clima",
+      "titulo": "API de clima",
+      "descripcion": "API REST que consulta y guarda en caché datos meteorológicos, con validación de entradas, límites de frecuencia y documentación OpenAPI.",
+      "tecnologias": ["Node.js", "Zod", "OpenAPI"],
+      "imagenes": ["/ejemplo/clima.svg"],
+      "enlace": null,
+      "orden": 3,
+      "publicado": true
+    }
+  ]
+}
