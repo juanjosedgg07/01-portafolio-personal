@@ -51,6 +51,10 @@
   "overrides": {
     "jwks-rsa": {
       "jose": "^5.10.0"
-    }
+    },
+    "@vercel/cli-config": {
+      "zod": "^4.6.7"
+    },
+    "@grpc/grpc-js": "^1.14.7"
   }
 }
