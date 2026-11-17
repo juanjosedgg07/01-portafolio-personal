@@ -15,16 +15,19 @@
     "verificar": "npm run lint && npm run typecheck && npm test",
     "prepare": "git config core.hooksPath .githooks || true",
     "sembrar": "node --env-file=.env.local scripts/sembrar.mjs",
-    "crear-admin": "node --env-file=.env.local scripts/crear-admin.mjs"
+    "crear-admin": "node --env-file=.env.local scripts/crear-admin.mjs",
+    "credenciales": "node scripts/configurar-credenciales.mjs"
   },
   "dependencies": {
     "@vercel/blob": "^2.9.0",
     "firebase": "^13.4.0",
     "firebase-admin": "^14.5.1",
+    "lucide-react": "^1.73.0",
     "next": "16.4.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
+    "simple-icons": "^16.38.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
