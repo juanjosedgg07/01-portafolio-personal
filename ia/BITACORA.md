@@ -10,5 +10,6 @@ Formato: fecha · propósito · evidencia (archivos/commits) · validación (có
 | 2026-11-16 | Corregir el despliegue fallido «Firestore has already been initialized» | `src/lib/firebase/admin.ts` | `next build` local con Firebase real y despliegue en estado READY | Se aceptó; se quitó `settings()`, que no aportaba nada |
 | 2026-11-16 | Detectar visualmente el botón «Menú» visible en escritorio | `Encabezado.module.css`, prueba e2e | Capturas de Playwright y nueva aserción por ancho | Se aceptó |
 | 2026-11-17 | Hacer genérica la configuración de IA (sin nombres de una herramienta concreta) | `AGENTS.md`, `ia/permisos.json`, `ia/hooks/`, `ia/instalar.mjs` | `npm run test:ia` en verde | Se aceptó por decisión del estudiante |
+| 2026-11-17 | Temas visuales, íconos, menú, filtro, galería con visor y capturas ficticias de proyectos | `src/lib/temas.ts`, `SelectorTema`, `IconoTecnologia`, `FiltroProyectos`, `Galeria`, `scripts/generar-imagenes.mjs` | 76 pruebas Vitest y 29 de Playwright en verde, incluido axe con contraste en los 5 temas; revisión visual de capturas | Se aceptó; se corrigieron los números visibles en la ruta de navegación y las capturas son ilustrativas, no de proyectos reales |
 
 > Agregue una fila por cada uso relevante de la IA. Indique lo que **no** aceptó y por qué.
