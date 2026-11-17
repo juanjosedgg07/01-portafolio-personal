@@ -26,14 +26,13 @@ function app(): App {
   });
 }
 
-let db: Firestore | undefined;
-
+/**
+ * getFirestore() ya devuelve la misma instancia para la misma app.
+ * No se llama a settings(): durante la compilación el módulo puede cargarse en varios
+ * bundles y Firestore solo admite settings() una vez (fallaba el prerender de /sitemap.xml).
+ */
 export function firestore(): Firestore {
-  if (!db) {
-    db = getFirestore(app());
-    db.settings({ ignoreUndefinedProperties: false });
-  }
-  return db;
+  return getFirestore(app());
 }
 
 export function authAdmin() {
